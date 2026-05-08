@@ -4,6 +4,7 @@ return {
     -- for complete functionality (language features)
     'quarto-dev/quarto-nvim',
     dev = false,
+    ft = { 'quarto', 'markdown' },
     opts = {
       lspFeatures = {
         enabled = true,
@@ -66,7 +67,7 @@ return {
       endfunction
       ]]
 
-      vim.g.slime_target = 'neovim'
+      vim.g.slime_target = 'kitty'
       vim.g.slime_no_mappings = true
       vim.g.slime_python_ipython = 1
     end,

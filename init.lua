@@ -14,6 +14,20 @@
 -- vim.treesitter.language.add('pandoc_markdown_inline', { path = "/usr/local/lib/libtree-sitter-pandoc-markdown-inline.so" })
 -- vim.treesitter.language.register('pandoc_markdown', { 'quarto', 'rmarkdown' })
 
+-- Disable unused providers to skip startup probes
+-- (re-enable python3 by setting to 1 and `pip install pynvim` if you start using molten-nvim)
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_node_provider = 0
+
+-- Disable built-in editorconfig support
+vim.g.editorconfig = false
+
+-- Add Mason's bin directory to PATH so LSP servers can be spawned before
+-- mason.setup() runs (mason is now lazy-loaded; this avoids the chicken-and-egg).
+vim.env.PATH = vim.fn.stdpath('data') .. '/mason/bin:' .. vim.env.PATH
+
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 -- Show which line your cursor is on
@@ -63,7 +77,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 vim.api.nvim_set_keymap("n", "L", "L", { noremap = true})
 vim.api.nvim_set_keymap("n", "H", "H", { noremap = true})
 vim.keymap.set('n', '<C-CR>', '<Plug>SlimeLineSend', { noremap = false })
-vim.g.slime_target = "neovim"
+vim.g.slime_target = "kitty"
 vim.g.slime_bracketed_paste = 1
 vim.g.slime_python_ipython = 0
 vim.g.slime_paste_file = vim.fn.expand("$HOME/.slime_paste")
@@ -108,4 +122,15 @@ vim.keymap.set("n", "<leader>t", ":ToggleTransparency<CR>")
       end
     })
   end, { nargs = '+' })
+
+-- Example function to toggle completion
+local function toggle_completion()
+  vim.b.completion = not vim.b.completion
+  if not vim.b.completion then
+    require("blink.cmp").hide() -- Hide the completion menu if disabled
+  end
+end
+
+-- Set a keymap (e.g., <C-q> in insert and normal modes)
+vim.keymap.set({ "i", "n" }, "<leader><C-b>", toggle_completion, { desc = "Toggle Completion" })
 

@@ -3,6 +3,7 @@ return {
   { -- for lsp features in code cells / embedded code
     'jmbuhr/otter.nvim',
     dev = false,
+    ft = { 'quarto', 'markdown', 'rmd' },
     dependencies = {
       {
         'neovim/nvim-lspconfig',
@@ -12,12 +13,55 @@ return {
     opts = {},
   },
 
+  { -- Mason loads deferred (after startup) so it doesn't block opening files.
+    -- Tools are already installed; this just lets `:Mason` work and re-checks
+    -- ensure_installed in the background.
+    'williamboman/mason.nvim',
+    cmd = { 'Mason', 'MasonInstall', 'MasonUninstall', 'MasonUninstallAll', 'MasonLog', 'MasonUpdate', 'MasonToolsInstall', 'MasonToolsUpdate' },
+    event = 'VeryLazy',
+    dependencies = { 'WhoIsSethDaniel/mason-tool-installer.nvim' },
+    config = function()
+      require('mason').setup {
+        ensure_installed = {
+          'lua-language-server',
+          'bash-language-server',
+          'css-lsp',
+          'html-lsp',
+          'json-lsp',
+          'haskell-language-server',
+          'pyright',
+          'r-languageserver',
+          'texlab',
+          'dotls',
+          'svelte-language-server',
+          'typescript-language-server',
+          'yaml-language-server',
+          'clangd',
+          'css-lsp',
+          'emmet-ls',
+          'html-lsp',
+          'sqlls',
+        },
+      }
+      require('mason-tool-installer').setup {
+        ensure_installed = {
+          'black',
+          'stylua',
+          'shfmt',
+          'isort',
+          'tree-sitter-cli',
+          'jupytext',
+        },
+      }
+    end,
+  },
+
   {
     'neovim/nvim-lspconfig',
+    event = { 'BufReadPre', 'BufNewFile' },
+    cmd = { 'LspInfo', 'LspInstall', 'LspStart', 'LspStop', 'LspRestart' },
     dependencies = {
-      { 'williamboman/mason.nvim' },
       { 'williamboman/mason-lspconfig.nvim' },
-      { 'WhoIsSethDaniel/mason-tool-installer.nvim' },
       { -- nice loading notifications
         -- PERF: but can slow down startup
         'j-hui/fidget.nvim',
@@ -41,43 +85,6 @@ return {
       { 'folke/neoconf.nvim', opts = {}, enabled = false },
     },
     config = function()
-
-      require('mason').setup {
-        ensure_installed = {
-          'lua-language-server',
-          'bash-language-server',
-          'css-lsp',
-          'html-lsp',
-          'json-lsp',
-          'haskell-language-server',
-          'pyright',
-          'r-languageserver',
-          'texlab',
-          'dotls',
-          'svelte-language-server',
-          'typescript-language-server',
-          'yaml-language-server',
-          'clangd',
-          'css-lsp',
-          'emmet-ls',
-          'html-lsp',
-          'sqlls'
-          -- 'julia-lsp'
-          -- 'rust-analyzer',
-          --'marksman',
-        },
-      }
-      require('mason-tool-installer').setup {
-        ensure_installed = {
-          'black',
-          'stylua',
-          'shfmt',
-          'isort',
-          'tree-sitter-cli',
-          'jupytext',
-        },
-      }
-
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
