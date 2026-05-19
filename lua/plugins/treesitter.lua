@@ -39,6 +39,7 @@ return {
           local lang = vim.treesitter.language.get_lang(ft) or ft
           if pcall(vim.treesitter.language.add, lang) then
             pcall(vim.treesitter.start, ev.buf, lang)
+            vim.bo[ev.buf].syntax = 'ON'
           end
         end,
       })

@@ -3,6 +3,7 @@ local ts = vim.treesitter
 
 ts.language.register('markdown', 'quarto')
 pcall(ts.start, 0, 'markdown')
+vim.bo.syntax = 'ON'
 
 vim.b.slime_cell_delimiter = '```'
 vim.b['quarto_is_r_mode'] = nil
