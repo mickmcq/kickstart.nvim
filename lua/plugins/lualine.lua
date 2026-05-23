@@ -2,10 +2,23 @@ return {
   {
     'nvim-lualine/lualine.nvim',
     enabled = true,
-    event = 'VeryLazy', -- lazy load after startup
+    event = 'VeryLazy',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     opts = {
-      options = { theme = 'ayu_light' },
+      options = {
+        theme = 'auto',
+        section_separators = '',
+        component_separators = '',
+        globalstatus = true,
+      },
+      sections = {
+        lualine_a = { 'mode' },
+        lualine_b = { 'branch', 'diff', 'diagnostics' },
+        lualine_c = { 'filename' },
+        lualine_x = { 'encoding', 'fileformat', 'filetype' },
+        lualine_y = { 'progress' },
+        lualine_z = { 'location' },
+      },
     },
   }
 }
