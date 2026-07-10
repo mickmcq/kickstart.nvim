@@ -328,6 +328,7 @@ end
 wk.add({
   {
     { '<leader><cr>', send_cell, desc = 'run code cell' },
+    { '<leader>a', group = '[a]i / hermes' },
     { '<leader>c', group = '[c]ode / [c]ell / [c]hunk' },
     { '<leader>ci', new_terminal_ipython, desc = 'new [i]python terminal' },
     { '<leader>cj', new_terminal_julia, desc = 'new [j]ulia terminal' },
