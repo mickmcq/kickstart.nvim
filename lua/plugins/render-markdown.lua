@@ -4,6 +4,12 @@ return {
   ft = { 'markdown', 'quarto' }, -- lazy load only for these filetypes
   opts = {
     file_types = { 'markdown', 'quarto' },
+    win_options = {
+      conceallevel = {
+        default = 1,
+        rendered = 1,
+      },
+    },
     heading = {
       enabled = true,
       sign = true,

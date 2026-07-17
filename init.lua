@@ -134,3 +134,16 @@ end
 -- Set a keymap (e.g., <C-q> in insert and normal modes)
 vim.keymap.set({ "i", "n" }, "<leader><C-b>", toggle_completion, { desc = "Toggle Completion" })
 
+-- Enable mouse in all modes
+vim.opt.mouse = 'a'
+
+-- Show a 2-character wide column for folding indicators
+vim.opt.foldcolumn = '2'
+
+vim.opt.wrap = true       -- Enable soft wrap
+vim.opt.linebreak = true  -- Wrap at word boundaries
+vim.opt.textwidth = 0     -- Set to 0 to disable hard wrapping by default
+
+-- vim-llama Toggle with <Leader>lt
+vim.keymap.set('n', '<Leader>lt', ':LlamaToggle<CR>', { desc = 'Toggle Llama' })
+

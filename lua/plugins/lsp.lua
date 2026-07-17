@@ -21,7 +21,8 @@ return {
     event = 'VeryLazy',
     dependencies = { 'WhoIsSethDaniel/mason-tool-installer.nvim' },
     config = function()
-      require('mason').setup {
+      require('mason').setup {}
+      require('mason-tool-installer').setup {
         ensure_installed = {
           'lua-language-server',
           'bash-language-server',
@@ -37,14 +38,8 @@ return {
           'typescript-language-server',
           'yaml-language-server',
           'clangd',
-          'css-lsp',
           'emmet-ls',
-          'html-lsp',
           'sqlls',
-        },
-      }
-      require('mason-tool-installer').setup {
-        ensure_installed = {
           'black',
           'stylua',
           'shfmt',

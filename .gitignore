@@ -1,7 +1,6 @@
-tags
-test.sh
-.luarc.json
-nvim
-
-spell/
+spell
+personal.lua
 lazy-lock.json
+/profile.json
+# Claude Code machine-local settings (do not commit to public repo)
+.claude/
