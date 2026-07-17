@@ -147,3 +147,14 @@ vim.opt.textwidth = 0     -- Set to 0 to disable hard wrapping by default
 -- vim-llama Toggle with <Leader>lt
 vim.keymap.set('n', '<Leader>lt', ':LlamaToggle<CR>', { desc = 'Toggle Llama' })
 
+-- Machine-specific / private settings, stored ENCRYPTED by chezmoi at
+-- ~/.config/nvim-private/personal.lua. It lives OUTSIDE this repo because
+-- ~/.config/nvim is itself managed as a chezmoi external, so chezmoi cannot
+-- manage files within it. Loaded only if present, so machines without it
+-- still start cleanly. Edit with:
+--     chezmoi edit ~/.config/nvim-private/personal.lua
+local personal_file = vim.fs.dirname(vim.fn.stdpath('config')) .. '/nvim-private/personal.lua'
+if vim.fn.filereadable(personal_file) == 1 then
+  dofile(personal_file)
+end
+
