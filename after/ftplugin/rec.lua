@@ -7,8 +7,12 @@
 -- closed folds are rendered.
 --
 --   level 1  a record, starting at its first field
---   level 2  a single field, plus any `+` continuation lines
+--   level 2  a single field that has `+` continuation lines to hide
 --   level 0  `%rec:` descriptor blocks, which stay unfolded
+--
+-- A field with no continuation lines deliberately gets no fold of its own: a
+-- one-line fold never renders closed (see 'foldminlines'), so it would only make
+-- `zc` look dead on first press and make `zj`/`zk` stop on every field.
 --
 -- This lives in after/ftplugin because ~/.config/nvim comes first in the
 -- runtimepath: a plain ftplugin/rec.lua would be sourced *before* vim-rec's and
@@ -36,6 +40,16 @@ end
 
 local function is_continuation(line)
   return line:match '^%+' ~= nil
+end
+
+-- does the field on `lnum` have continuation lines below it?
+local function has_continuation(lnum)
+  local last = vim.fn.line '$'
+  local next_lnum = lnum + 1
+  while next_lnum <= last and is_comment(vim.fn.getline(next_lnum)) do
+    next_lnum = next_lnum + 1
+  end
+  return next_lnum <= last and is_continuation(vim.fn.getline(next_lnum))
 end
 
 function _G.RecFoldExpr()
@@ -70,7 +84,9 @@ function _G.RecFoldExpr()
   if is_blank(prev_line) or is_descriptor(prev_line) then
     return '>1'
   end
-  return '>2'
+
+  -- a later field in the record: worth its own fold only if it continues
+  return has_continuation(lnum) and '>2' or '1'
 end
 
 -- render a closed fold as its first line plus a line count,
