@@ -7,8 +7,11 @@
 -- closed folds are rendered.
 --
 --   level 1  a record, starting at its first field
---   level 2  a single field that has `+` continuation lines to hide
+--   level 2  a single field whose value spans several lines
 --   level 0  `%rec:` descriptor blocks, which stay unfolded
+--
+-- recutils writes a multi-line value two ways, and both fold: a `+` at the start
+-- of the continuation line, or a `\` at the end of the line being continued.
 --
 -- A field with no continuation lines deliberately gets no fold of its own: a
 -- one-line fold never renders closed (see 'foldminlines'), so it would only make
@@ -42,8 +45,22 @@ local function is_continuation(line)
   return line:match '^%+' ~= nil
 end
 
+-- a trailing `\` pulls the following line into this one's value, whatever that
+-- line looks like
+local function continues_below(line)
+  return line:match '\\%s*$' ~= nil
+end
+
+-- is `lnum` part of the value started on an earlier line?
+local function is_continued_into(lnum)
+  return lnum > 1 and continues_below(vim.fn.getline(lnum - 1))
+end
+
 -- does the field on `lnum` have continuation lines below it?
 local function has_continuation(lnum)
+  if continues_below(vim.fn.getline(lnum)) then
+    return true
+  end
   local last = vim.fn.line '$'
   local next_lnum = lnum + 1
   while next_lnum <= last and is_comment(vim.fn.getline(next_lnum)) do
@@ -56,7 +73,17 @@ function _G.RecFoldExpr()
   local lnum = vim.v.lnum
   local line = vim.fn.getline(lnum)
 
-  if is_blank(line) or is_descriptor(line) then
+  if is_blank(line) then
+    return '0'
+  end
+
+  -- a line pulled in by a trailing `\` belongs to the value above it even when
+  -- it looks like a field or a descriptor of its own
+  if is_continued_into(lnum) then
+    return '='
+  end
+
+  if is_descriptor(line) then
     return '0'
   end
 
@@ -72,7 +99,7 @@ function _G.RecFoldExpr()
   local prev = lnum - 1
   while prev >= 1 do
     local l = vim.fn.getline(prev)
-    if not (is_comment(l) or is_continuation(l)) then
+    if not (is_comment(l) or is_continuation(l) or is_continued_into(prev)) then
       break
     end
     prev = prev - 1
