@@ -319,8 +319,12 @@ return {
           },
         },
 
-        -- Optional: explicit command if you need it (usually auto-detected)
-        -- cmd = { vim.fn.exepath('R'), '--slave', '-e', 'languageserver::run()' },
+        -- Use Mason's r-languageserver wrapper. The lspconfig default is
+        -- `R --no-echo -e languageserver::run()`, which loads from the *system*
+        -- R library -- where `languageserver` is not installed. Mason keeps its
+        -- own library under packages/r-languageserver/build, and this wrapper
+        -- points R at it.
+        cmd = { vim.fn.expand('$HOME/.local/share/nvim/mason/bin/r-languageserver') },
 
         -- Optional: start for single-file scripts not in a project
         single_file_support = true,
